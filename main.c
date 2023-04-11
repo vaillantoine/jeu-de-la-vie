@@ -146,12 +146,15 @@ int main(int argc, char **argv){
     recup_param(argc, argv, &N, &M, &K);
     int **tab = init_tab(N, M);
 
+    system("clear");
     affichage(tab, N, M);   //affichage de l'état initial
 
     for (int i=0; i<K; i++) {
         calculsuivant(tab, N, M);
+        usleep(100);
+        system("clear");
+        affichage(tab, N, M);   //afichage de l'état actuel
     }
-    affichage(tab, N, M);   //afichage de l'état final
 
     desalloc(tab, N);    //on n'oublie pas de désallouer tab
     return 0;
