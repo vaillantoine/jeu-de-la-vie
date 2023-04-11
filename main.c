@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <time.h> /* pour la fonction clock */
 
 
 void affiche_aide (void) {
@@ -50,7 +51,7 @@ int ** init_tab (int N, int M) {
 
     for (int i=0; i<N; i++) {
         for (int j=0; j<M; j++) {
-            tab[i][j] = rand() % 2; //Initialisation des valeurs (0 ou 1) de manière aléatoire
+            tab[i][j] = ((double)rand()/RAND_MAX*2 > 0.5); //Initialisation des valeurs (0 ou 1) de manière aléatoire
         }
     }
 
@@ -109,7 +110,7 @@ int cell_next(int alentours[3][3]) {
     }
 }
 
-void calculsuivant(int **tab, int N, int M) {
+int ** calculsuivant(int **tab, int N, int M) {
     /*Détermine le tableau à l'itération suivante*/
     int **tab_next = alloc(N, M);
     for (int i=0; i<N; i++) {
@@ -129,13 +130,7 @@ void calculsuivant(int **tab, int N, int M) {
         }
     }
 
-    for (int i=0; i<N; i++) {
-        for (int j=0; j<M; j++) {
-            tab[i][j] = tab_next[i][j]; //on change l'état de tab
-        }
-    }
-
-    free(tab_next); //on n'oublie pas de désallouer tab_next
+    return tab_next;
 }
 
 
@@ -144,13 +139,16 @@ int main(int argc, char **argv){
     int M;
     int K;
     recup_param(argc, argv, &N, &M, &K);
+    srand(clock());
     int **tab = init_tab(N, M);
 
     system("clear");
     affichage(tab, N, M);   //affichage de l'état initial
 
     for (int i=0; i<K; i++) {
-        calculsuivant(tab, N, M);
+        int **tab_next = calculsuivant(tab, N, M);
+        desalloc(tab, N);
+        tab = tab_next;
         usleep(100);
         system("clear");
         affichage(tab, N, M);   //afichage de l'état actuel
