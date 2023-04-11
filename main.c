@@ -149,7 +149,7 @@ int main(int argc, char **argv){
         int **tab_next = calculsuivant(tab, N, M);
         desalloc(tab, N);
         tab = tab_next;
-        usleep(100);
+        usleep(100000);
         system("clear");
         affichage(tab, N, M);   //afichage de l'état actuel
     }
