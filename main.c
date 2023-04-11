@@ -51,7 +51,7 @@ int ** init_tab (int N, int M) {
 
     for (int i=0; i<N; i++) {
         for (int j=0; j<M; j++) {
-            tab[i][j] = ((double)rand()/RAND_MAX*2 > 0.5); //Initialisation des valeurs (0 ou 1) de manière aléatoire
+            tab[i][j] = rand() % 2; //Initialisation des valeurs (0 ou 1) de manière aléatoire
         }
     }
 
