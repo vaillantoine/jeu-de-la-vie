@@ -63,7 +63,7 @@ void tabsize (char *nom_fichier, int *N, int * M) {
     cpt = 1;
     char chaine[*M];
     while (fgets(chaine, *M, fichier) != NULL) {
-        cpt++
+        cpt++;
     }
     *N = cpt;
 
@@ -81,14 +81,13 @@ int ** init_tab (char *nom_fichier, int N, int M) {
         exit(1);
     }
 
-    int i = 0;
     int j;
     char c;
-    while (i < N) {
+    for (int i=0; i<N; i++) {
         j = 0;
         c = fgetc(fichier);
         while (c != EOF) {
-            tab[i][j] = atoi(c);
+            tab[i][j] = atoi(&c);
             j++;
         }
     }
@@ -97,8 +96,6 @@ int ** init_tab (char *nom_fichier, int N, int M) {
 
     return tab;
 }
-
-void lecture_fichier ()
 
 void affichage(int **tab, int N, int M) {
     /*Affiche de manière stylisée le contenu d'un tableau de booléens de taille N*M*/
