@@ -11,12 +11,11 @@ void affiche_aide (void) {
     exit(1);
 }
 
-void recup_param (int argc, char **argv, int *N, int *M, int *K) {
+void recup_param (int argc, char **argv, char *nom_fichier, int *K) {
     /*Récupère les paramètres d'entrée du main*/
-    if (argc == 4) {
-        *N = atoi(argv[1]);
-        *M = atoi(argv[2]);
-        *K = atoi(argv[3]);
+    if (argc == 3) {
+        *K = atoi(argv[2]);
+        nom_fichier = argv[1];
     }
     else {
         affiche_aide(); //Si mauvais nombre de paramètres : affichage de l'aide dans le terminal
@@ -45,18 +44,61 @@ void desalloc (int **tab, int N) {
     free(tab);
 }
 
-int ** init_tab (int N, int M) {
-    /*Crée, alloue la mémoire et initialise les valeurs d'un tableau N*M*/
+void tabsize (char *nom_fichier, int *N, int * M) {
+    /*trouve la taille du tableau d'initialisation*/
+    FILE * fichier = NULL;
+    fichier = fopen(nom_fichier, "r");
+
+    if (fichier == NULL) {
+        fprintf(stderr, "Le fichier %s n'existe pas\n", nom_fichier);
+        exit(1);
+    }
+
+    int cpt = 0;
+    while (fgetc(fichier) != EOF) {
+        cpt++;
+    }
+    *M = cpt;
+
+    cpt = 1;
+    char chaine[*M];
+    while (fgets(chaine, *M, fichier) != NULL) {
+        cpt++
+    }
+    *N = cpt;
+
+    fclose(fichier);
+}
+
+int ** init_tab (char *nom_fichier, int N, int M) {
     int **tab = alloc(N, M);
 
-    for (int i=0; i<N; i++) {
-        for (int j=0; j<M; j++) {
-            tab[i][j] = rand() % 2; //Initialisation des valeurs (0 ou 1) de manière aléatoire
+    FILE * fichier = NULL;
+    fichier = fopen(nom_fichier, "r");
+
+    if (fichier == NULL) {
+        fprintf(stderr, "Le fichier %s n'existe pas\n", nom_fichier);
+        exit(1);
+    }
+
+    int i = 0;
+    int j;
+    char c;
+    while (i < N) {
+        j = 0;
+        c = fgetc(fichier);
+        while (c != EOF) {
+            tab[i][j] = atoi(c);
+            j++;
         }
     }
 
+    fclose(fichier);
+
     return tab;
 }
+
+void lecture_fichier ()
 
 void affichage(int **tab, int N, int M) {
     /*Affiche de manière stylisée le contenu d'un tableau de booléens de taille N*M*/
@@ -138,9 +180,10 @@ int main(int argc, char **argv){
     int N;
     int M;
     int K;
-    recup_param(argc, argv, &N, &M, &K);
-    srand(clock());
-    int **tab = init_tab(N, M);
+    char * nom_fichier = "";
+    recup_param(argc, argv, nom_fichier, &K);
+    tabsize(nom_fichier, &N, &M);
+    int **tab = init_tab(nom_fichier, N, M);
 
     system("clear");
     affichage(tab, N, M);   //affichage de l'état initial
